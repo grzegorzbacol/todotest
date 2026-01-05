@@ -1,0 +1,19 @@
+# Nixpacks configuration for Coolify
+# This tells Nixpacks to use our custom Dockerfile instead of auto-generating one
+
+[phases.setup]
+nixPkgs = ["php83", "composer", "nodejs-22_x"]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist",
+    "npm install",
+    "npm run build"
+]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "php-fpm"
+
