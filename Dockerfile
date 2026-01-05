@@ -36,6 +36,11 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Copy application files
 COPY . .
 
+# Clear Laravel cache (remove dev packages from cache)
+RUN php artisan config:clear || true \
+    && php artisan cache:clear || true \
+    && rm -rf bootstrap/cache/packages.php bootstrap/cache/services.php || true
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
