@@ -36,6 +36,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php -r \"if (!is_dir('bootstrap/cache')) { mkdir('bootstrap/cache', 0755, true); }\"",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
