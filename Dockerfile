@@ -19,6 +19,9 @@ RUN apk add --no-cache \
 # Install PHP extensions
 RUN docker-php-ext-install pdo_pgsql pdo_mysql mbstring exif pcntl bcmath gd zip
 
+# Install Node.js and npm for frontend build
+RUN apk add --no-cache nodejs npm
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -33,8 +36,18 @@ COPY routes ./routes
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
+# Copy package files for npm install
+COPY package.json package-lock.json* ./
+COPY tsconfig.json tsconfig.node.json vite.config.ts tailwind.config.js postcss.config.js ./
+
+# Install Node.js dependencies
+RUN npm ci --only=production || npm install
+
 # Copy application files
 COPY . .
+
+# Build frontend assets
+RUN npm run build
 
 # Regenerate Laravel cache (without dev packages)
 RUN php artisan package:discover --ansi || true
