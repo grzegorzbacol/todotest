@@ -3,7 +3,7 @@
 # Note: Coolify automatically adds nginx as reverse proxy for PHP-FPM
 
 [phases.setup]
-nixPkgs = ["php83", "composer", "nodejs-22_x"]
+nixPkgs = ["php84", "composer", "nodejs-22_x"]
 
 [phases.install]
 cmds = [
