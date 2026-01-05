@@ -8,9 +8,16 @@ echo "Starting PHP-FPM configuration fix..."
 # Find and fix all PHP-FPM pool config files
 find /usr/local/etc/php-fpm.d/ -name "*.conf" -type f 2>/dev/null | while read config_file; do
     echo "Processing config file: $config_file"
+    
     # Show original content
+    echo "Original listen configuration:"
+    grep "^listen\s*=" "$config_file" 2>/dev/null || echo "  (none found)"
     echo "Original listen.allowed_clients lines:"
     grep "listen.allowed_clients" "$config_file" 2>/dev/null || echo "  (none found)"
+    
+    # Fix listen address - change 127.0.0.1 to 0.0.0.0 for Docker networking
+    sed -i.bak 's/^listen\s*=\s*127\.0\.0\.1:9000$/listen = 0.0.0.0:9000/' "$config_file" 2>/dev/null || true
+    sed -i.bak 's/^listen\s*=\s*localhost:9000$/listen = 0.0.0.0:9000/' "$config_file" 2>/dev/null || true
     
     # Remove or comment out listen.allowed_clients lines (Alpine Linux compatible)
     sed -i.bak 's/^listen\.allowed_clients\s*=.*$/# Removed for Docker networking - allow all connections/' "$config_file" 2>/dev/null || true
@@ -21,7 +28,10 @@ find /usr/local/etc/php-fpm.d/ -name "*.conf" -type f 2>/dev/null | while read c
     
     # Show modified content
     echo "After modification:"
-    grep "listen.allowed_clients" "$config_file" 2>/dev/null || echo "  (removed/commented)"
+    echo "  listen configuration:"
+    grep "^listen\s*=" "$config_file" 2>/dev/null || echo "    (not found)"
+    echo "  listen.allowed_clients:"
+    grep "listen.allowed_clients" "$config_file" 2>/dev/null || echo "    (removed/commented)"
 done
 
 # Verify PHP-FPM configuration
