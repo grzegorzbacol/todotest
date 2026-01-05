@@ -1,8 +1,9 @@
 # ASSUMPTION: Multi-stage build for production deployment on Coolify
 # Coolify will automatically add nginx as reverse proxy
 # This Dockerfile only builds PHP-FPM application
+# Note: Using PHP 8.4 to match Symfony 8.0 requirements
 
-FROM php:8.3-fpm-alpine AS base
+FROM php:8.4-fpm-alpine AS base
 
 # Install system dependencies
 RUN apk add --no-cache \
