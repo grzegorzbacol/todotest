@@ -49,8 +49,12 @@ FROM base AS production
 # Copy PHP-FPM configuration (after all files are copied)
 COPY docker/php-fpm/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
+# Copy start script
+COPY docker/php-fpm/start.sh /usr/local/bin/start-php-fpm.sh
+RUN chmod +x /usr/local/bin/start-php-fpm.sh
+
 # Expose port
 EXPOSE 9000
 
-CMD ["php-fpm", "-F"]
+CMD ["/usr/local/bin/start-php-fpm.sh"]
 

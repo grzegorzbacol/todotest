@@ -13,5 +13,5 @@ cmds = [
 ]
 
 [start]
-cmd = "php-fpm -F"
+cmd = "/usr/local/bin/start-php-fpm.sh || php-fpm -F"
 
