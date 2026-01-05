@@ -39,6 +39,9 @@ COPY . .
 # Regenerate Laravel cache (without dev packages)
 RUN php artisan package:discover --ansi || true
 
+# Copy PHP-FPM configuration
+COPY docker/php-fpm/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
