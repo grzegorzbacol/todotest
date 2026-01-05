@@ -13,7 +13,9 @@ return new class extends Migration
             $table->string('name');
             $table->uuid('parent_id')->nullable();
             $table->timestamps();
+        });
 
+        Schema::table('projects', function (Blueprint $table) {
             $table->foreign('parent_id')->references('id')->on('projects')->onDelete('cascade');
             $table->index('parent_id');
         });
@@ -21,6 +23,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropForeign(['parent_id']);
+            $table->dropIndex(['parent_id']);
+        });
+        
         Schema::dropIfExists('projects');
     }
 };
