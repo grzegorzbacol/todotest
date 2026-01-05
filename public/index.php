@@ -20,16 +20,21 @@ require __DIR__.'/../vendor/autoload.php';
 
 // Bootstrap Laravel and handle the request...
 try {
-    (require_once __DIR__.'/../bootstrap/app.php')
-        ->handleRequest(Request::capture());
+    $app = require_once __DIR__.'/../bootstrap/app.php';
+    $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     // Log error and show it
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-    if (env('APP_DEBUG', false)) {
-        throw $e;
-    }
+    error_log('ERROR: ' . $e->getMessage());
+    error_log('FILE: ' . $e->getFile() . ':' . $e->getLine());
+    error_log('TRACE: ' . $e->getTraceAsString());
+    
+    // Always show error in response for debugging
     http_response_code(500);
-    echo 'Internal Server Error';
+    header('Content-Type: text/plain');
+    echo "ERROR: " . $e->getMessage() . "\n";
+    echo "FILE: " . $e->getFile() . ":" . $e->getLine() . "\n";
+    if (env('APP_DEBUG', false)) {
+        echo "\nTRACE:\n" . $e->getTraceAsString();
+    }
 }
 
