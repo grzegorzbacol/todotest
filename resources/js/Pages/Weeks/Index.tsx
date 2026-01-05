@@ -1,10 +1,9 @@
-import { PageProps } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 import WeekHeader from '../../Components/WeekHeader';
 import WeekBoard from '../../Components/WeekBoard';
 import { WeekData } from '../../Types';
 
-export default function Index({ weekStart, weekEnd, days, previousWeek, nextWeek }: PageProps<WeekData>) {
+export default function Index({ weekStart, weekEnd, days, previousWeek, nextWeek }: WeekData) {
     return (
         <AppLayout>
             <div className="py-6">

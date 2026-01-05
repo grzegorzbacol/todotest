@@ -1,8 +1,11 @@
-import { PageProps } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 import { Task } from '../../Types';
 
-export default function Single({ tasks }: PageProps<{ tasks: Task[] }>) {
+interface SingleProps {
+    tasks: Task[];
+}
+
+export default function Single({ tasks }: SingleProps) {
     return (
         <AppLayout>
             <div className="py-6">
@@ -12,7 +15,7 @@ export default function Single({ tasks }: PageProps<{ tasks: Task[] }>) {
                         {tasks.length === 0 ? (
                             <p className="text-gray-500">Brak zadań pojedynczych.</p>
                         ) : (
-                            tasks.map((task) => (
+                            tasks.map((task: Task) => (
                                 <div
                                     key={task.id}
                                     className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"

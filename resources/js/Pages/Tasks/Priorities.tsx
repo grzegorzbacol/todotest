@@ -1,16 +1,17 @@
-import { PageProps } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 import { Task } from '../../Types';
+
+interface PrioritiesProps {
+    todayTasks: Task[];
+    starredTasks: Task[];
+    overdueTasks: Task[];
+}
 
 export default function Priorities({
     todayTasks,
     starredTasks,
     overdueTasks,
-}: PageProps<{
-    todayTasks: Task[];
-    starredTasks: Task[];
-    overdueTasks: Task[];
-}>) {
+}: PrioritiesProps) {
     return (
         <AppLayout>
             <div className="py-6">
@@ -24,7 +25,7 @@ export default function Priorities({
                                 {todayTasks.length === 0 ? (
                                     <p className="text-gray-500">Brak zadań na dzisiaj.</p>
                                 ) : (
-                                    todayTasks.map((task) => (
+                                    todayTasks.map((task: Task) => (
                                         <div
                                             key={task.id}
                                             className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
@@ -45,7 +46,7 @@ export default function Priorities({
                                 {starredTasks.length === 0 ? (
                                     <p className="text-gray-500">Brak oznaczonych zadań.</p>
                                 ) : (
-                                    starredTasks.map((task) => (
+                                    starredTasks.map((task: Task) => (
                                         <div
                                             key={task.id}
                                             className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
@@ -66,7 +67,7 @@ export default function Priorities({
                                 {overdueTasks.length === 0 ? (
                                     <p className="text-gray-500">Brak zaległych zadań.</p>
                                 ) : (
-                                    overdueTasks.map((task) => (
+                                    overdueTasks.map((task: Task) => (
                                         <div
                                             key={task.id}
                                             className="bg-white rounded-lg shadow-sm border border-red-200 p-4"
