@@ -13,5 +13,5 @@ cmds = [
 ]
 
 [start]
-cmd = "php-fpm"
+cmd = "php-fpm -F"
 
