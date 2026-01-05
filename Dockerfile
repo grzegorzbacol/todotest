@@ -1,5 +1,6 @@
 # ASSUMPTION: Multi-stage build for production deployment on Coolify
-# TODO: Adjust PHP version if needed (PHP 8.3 required)
+# Coolify will automatically add nginx as reverse proxy
+# This Dockerfile only builds PHP-FPM application
 
 FROM php:8.3-fpm-alpine AS base
 

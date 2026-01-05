@@ -1,5 +1,6 @@
 # Nixpacks configuration for Coolify
-# This tells Nixpacks to use our custom Dockerfile instead of auto-generating one
+# Coolify will use this to configure the build process
+# Note: Coolify automatically adds nginx as reverse proxy for PHP-FPM
 
 [phases.setup]
 nixPkgs = ["php83", "composer", "nodejs-22_x"]
@@ -10,9 +11,6 @@ cmds = [
     "npm install",
     "npm run build"
 ]
-
-[phases.build]
-cmds = []
 
 [start]
 cmd = "php-fpm"
