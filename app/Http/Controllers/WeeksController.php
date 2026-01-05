@@ -29,7 +29,9 @@ class WeeksController extends Controller
             ->with(['project:id,name', 'labels:id,name,color'])
             ->orderBy('sort_order')
             ->get()
-            ->groupBy('scheduled_for');
+            ->groupBy(function ($task) {
+                return $task->scheduled_for ? $task->scheduled_for->format('Y-m-d') : null;
+            });
 
         // Map tasks to days
         foreach ($days as &$day) {
@@ -62,7 +64,9 @@ class WeeksController extends Controller
             ->with(['project:id,name', 'labels:id,name,color'])
             ->orderBy('sort_order')
             ->get()
-            ->groupBy('scheduled_for');
+            ->groupBy(function ($task) {
+                return $task->scheduled_for ? $task->scheduled_for->format('Y-m-d') : null;
+            });
 
         foreach ($days as &$day) {
             $day['tasks'] = $tasksByDate->get($day['date'], collect())
