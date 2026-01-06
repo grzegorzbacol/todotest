@@ -23,14 +23,11 @@ define('LARAVEL_START', microtime(true));
 
 // Fix SCRIPT_NAME to prevent index.php from appearing in URLs
 // This must be done before Laravel is loaded, as Laravel uses SCRIPT_NAME for URL generation
-if (isset($_SERVER['SCRIPT_NAME']) && str_contains($_SERVER['SCRIPT_NAME'], 'index.php')) {
-    $_SERVER['SCRIPT_NAME'] = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
-    if (empty($_SERVER['SCRIPT_NAME'])) {
-        $_SERVER['SCRIPT_NAME'] = '/';
-    }
-}
+// Force SCRIPT_NAME to root directory, regardless of what Caddy sends
+$_SERVER['SCRIPT_NAME'] = '/';
+$_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Also fix PHP_SELF and SCRIPT_FILENAME
+// Also fix PHP_SELF
 if (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'index.php')) {
     $_SERVER['PHP_SELF'] = str_replace('/index.php', '', $_SERVER['PHP_SELF']);
     if (empty($_SERVER['PHP_SELF'])) {
