@@ -24,15 +24,37 @@ define('LARAVEL_START', microtime(true));
 // Fix SCRIPT_NAME to prevent index.php from appearing in URLs
 // This must be done before Laravel is loaded, as Laravel uses SCRIPT_NAME for URL generation
 // Force SCRIPT_NAME to root directory, regardless of what Caddy sends
-$_SERVER['SCRIPT_NAME'] = '/';
+// Handle case where SCRIPT_NAME might be an array (shouldn't happen, but just in case)
+if (is_array($_SERVER['SCRIPT_NAME'] ?? null)) {
+    $_SERVER['SCRIPT_NAME'] = '/';
+} else {
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/';
+    if (is_string($scriptName) && str_contains($scriptName, 'index.php')) {
+        $_SERVER['SCRIPT_NAME'] = str_replace('/index.php', '', $scriptName);
+        if (empty($_SERVER['SCRIPT_NAME'])) {
+            $_SERVER['SCRIPT_NAME'] = '/';
+        }
+    } else {
+        $_SERVER['SCRIPT_NAME'] = '/';
+    }
+}
+
+// Always set SCRIPT_FILENAME to current file
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
 // Also fix PHP_SELF
-if (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'index.php')) {
-    $_SERVER['PHP_SELF'] = str_replace('/index.php', '', $_SERVER['PHP_SELF']);
-    if (empty($_SERVER['PHP_SELF'])) {
+if (isset($_SERVER['PHP_SELF'])) {
+    $phpSelf = $_SERVER['PHP_SELF'];
+    if (is_string($phpSelf) && str_contains($phpSelf, 'index.php')) {
+        $_SERVER['PHP_SELF'] = str_replace('/index.php', '', $phpSelf);
+        if (empty($_SERVER['PHP_SELF'])) {
+            $_SERVER['PHP_SELF'] = '/';
+        }
+    } elseif (!is_string($phpSelf)) {
         $_SERVER['PHP_SELF'] = '/';
     }
+} else {
+    $_SERVER['PHP_SELF'] = '/';
 }
 
 try {
