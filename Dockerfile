@@ -19,10 +19,18 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction || true
 RUN npm install && npm run build || true
 
+# Copy PHP-FPM configuration
+COPY docker/php-fpm/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
+# Copy start script
+COPY docker/php-fpm/start.sh /usr/local/bin/start-php-fpm.sh
+RUN chmod +x /usr/local/bin/start-php-fpm.sh
+
 # Uprawnienia
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
 # PHP-FPM zawsze działa na porcie 9000
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD ["/usr/local/bin/start-php-fpm.sh"]
