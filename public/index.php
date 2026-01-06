@@ -1,5 +1,22 @@
 <?php
 
+// Fix SCRIPT_NAME, SCRIPT_FILENAME and PHP_SELF IMMEDIATELY
+// This must be done before ANY other code, as Laravel uses these for URL generation
+// Caddy may send these as arrays or with index.php, so we force them to correct values
+if (isset($_SERVER['SCRIPT_NAME']) && (is_array($_SERVER['SCRIPT_NAME']) || str_contains((string)$_SERVER['SCRIPT_NAME'], 'index.php'))) {
+    $_SERVER['SCRIPT_NAME'] = '/';
+}
+if (!isset($_SERVER['SCRIPT_NAME']) || empty($_SERVER['SCRIPT_NAME'])) {
+    $_SERVER['SCRIPT_NAME'] = '/';
+}
+$_SERVER['SCRIPT_FILENAME'] = __FILE__;
+if (isset($_SERVER['PHP_SELF']) && (is_array($_SERVER['PHP_SELF']) || str_contains((string)$_SERVER['PHP_SELF'], 'index.php'))) {
+    $_SERVER['PHP_SELF'] = '/';
+}
+if (!isset($_SERVER['PHP_SELF']) || empty($_SERVER['PHP_SELF'])) {
+    $_SERVER['PHP_SELF'] = '/';
+}
+
 // Enable error reporting only if APP_DEBUG is true
 // Use $_ENV or getenv() instead of env() because env() is not available before Laravel is loaded
 $appDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?? 'false';
@@ -20,14 +37,6 @@ if (filter_var($appDebug, FILTER_VALIDATE_BOOLEAN)) {
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
-
-// Fix SCRIPT_NAME to prevent index.php from appearing in URLs
-// This must be done before Laravel is loaded, as Laravel uses SCRIPT_NAME for URL generation
-// Force SCRIPT_NAME to root directory, regardless of what Caddy sends
-// Caddy may send SCRIPT_NAME as an array or with index.php, so we force it to '/'
-$_SERVER['SCRIPT_NAME'] = '/';
-$_SERVER['SCRIPT_FILENAME'] = __FILE__;
-$_SERVER['PHP_SELF'] = '/';
 
 try {
     // Determine if the application is in maintenance mode...
