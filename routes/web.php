@@ -5,9 +5,7 @@ use App\Http\Controllers\WeeksController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    // Test route - return simple response to check if Laravel works
-    return response()->json(['status' => 'ok', 'message' => 'Laravel is working']);
-    // return redirect('/weeks');
+    return redirect('/weeks');
 });
 
 // Weeks kanban view
