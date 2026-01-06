@@ -1,7 +1,9 @@
 <?php
 
 // Enable error reporting only if APP_DEBUG is true
-if (env('APP_DEBUG', false)) {
+// Use $_ENV or getenv() instead of env() because env() is not available before Laravel is loaded
+$appDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?? 'false';
+if (filter_var($appDebug, FILTER_VALIDATE_BOOLEAN)) {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
@@ -46,7 +48,9 @@ try {
     error_log('TRACE: ' . $e->getTraceAsString());
     
     // Show error in response only if APP_DEBUG is true
-    if (env('APP_DEBUG', false)) {
+    // Use $_ENV or getenv() instead of env() because env() is not available before Laravel is loaded
+    $appDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?? 'false';
+    if (filter_var($appDebug, FILTER_VALIDATE_BOOLEAN)) {
         http_response_code(500);
         header('Content-Type: text/plain; charset=utf-8');
         echo "ERROR: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "\n\n";
