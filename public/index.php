@@ -1,20 +1,34 @@
 <?php
 
-// Fix SCRIPT_NAME, SCRIPT_FILENAME and PHP_SELF IMMEDIATELY
+// Fix SCRIPT_NAME, SCRIPT_FILENAME, PHP_SELF and REQUEST_URI IMMEDIATELY
 // This must be done before ANY other code, as Laravel uses these for URL generation
 // Caddy may send these as arrays or with index.php, so we force them to correct values
-if (isset($_SERVER['SCRIPT_NAME']) && (is_array($_SERVER['SCRIPT_NAME']) || str_contains((string)$_SERVER['SCRIPT_NAME'], 'index.php'))) {
+
+// Fix SCRIPT_NAME
+if (isset($_SERVER['SCRIPT_NAME']) && (is_array($_SERVER['SCRIPT_NAME']) || (is_string($_SERVER['SCRIPT_NAME']) && str_contains($_SERVER['SCRIPT_NAME'], 'index.php')))) {
     $_SERVER['SCRIPT_NAME'] = '/';
 }
 if (!isset($_SERVER['SCRIPT_NAME']) || empty($_SERVER['SCRIPT_NAME'])) {
     $_SERVER['SCRIPT_NAME'] = '/';
 }
+
+// Fix SCRIPT_FILENAME
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
-if (isset($_SERVER['PHP_SELF']) && (is_array($_SERVER['PHP_SELF']) || str_contains((string)$_SERVER['PHP_SELF'], 'index.php'))) {
+
+// Fix PHP_SELF
+if (isset($_SERVER['PHP_SELF']) && (is_array($_SERVER['PHP_SELF']) || (is_string($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'index.php')))) {
     $_SERVER['PHP_SELF'] = '/';
 }
 if (!isset($_SERVER['PHP_SELF']) || empty($_SERVER['PHP_SELF'])) {
     $_SERVER['PHP_SELF'] = '/';
+}
+
+// Fix REQUEST_URI - remove index.php from path
+if (isset($_SERVER['REQUEST_URI']) && is_string($_SERVER['REQUEST_URI'])) {
+    $_SERVER['REQUEST_URI'] = preg_replace('#^/index\.php(/.*)?$#', '$1', $_SERVER['REQUEST_URI']);
+    if (empty($_SERVER['REQUEST_URI'])) {
+        $_SERVER['REQUEST_URI'] = '/';
+    }
 }
 
 // Enable error reporting only if APP_DEBUG is true
